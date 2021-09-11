@@ -1,26 +1,33 @@
-runs-on: ubuntu-latest
-steps:
-- name: Install SSH key
-  uses: shimataro/ssh-key-action@v2
-  with:
-    key: ${{ secrets.SSH_KEY }}
-    name: id_rsa # optional
-    known_hosts: ${{ secrets.KNOWN_HOSTS }}
-    #config: ${{ secrets.CONFIG }} # ssh_config; optional
-    if_key_exists: ignore # replace / ignore / fail; optional (defaults to fail)
-- name: clone
-  run: git clone --branch mirror git@github.com:rrrru/abracadabra.git
+name: git_magic
 
-- name: Rename
-  run: |
-    git filter-branch -f --env-filter "
-    GIT_AUTHOR_NAME='BranName'
-    GIT_AUTHOR_EMAIL='BranName@email'
-    GIT_COMMITTER_NAME='BranName'
-    GIT_COMMITTER_EMAIL='BranName@email'
-    " HEAD
+on: [workflow_dispatch]
 
-- name: MR
-  run: |
-    git remote add origin git@github.com:rrrru/automator.git
-    git push origin dev
+
+jobs:
+  tasks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: id_rsa # optional
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        #config: ${{ secrets.CONFIG }} # ssh_config; optional
+        if_key_exists: ignore # replace / ignore / fail; optional (defaults to fail)
+    - name: clone
+      run: git clone --branch mirror git@github.com:rrrru/abracadabra.git
+
+    - name: Rename
+      run: |
+        git filter-branch -f --env-filter "
+        GIT_AUTHOR_NAME='BranName'
+        GIT_AUTHOR_EMAIL='BranName@email'
+        GIT_COMMITTER_NAME='BranName'
+        GIT_COMMITTER_EMAIL='BranName@email'
+        " HEAD
+
+    - name: MR
+      run: |
+        git remote add origin git@github.com:rrrru/automator.git
+        git push origin dev
