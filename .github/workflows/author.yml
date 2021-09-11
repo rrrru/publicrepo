@@ -12,21 +12,18 @@ jobs:
       with:
         host: github.com
         private-key: ${{ secrets.SSH_KEY }}
-    - name: Clone
-      run: |
-        git clone --branch mirror git@github.com:rrrru/abracadabra.git
-        cd abracadabra
 
     - name: Rename
       run: |
+        git clone --branch mirror git@github.com:rrrru/abracadabra.git
+        ls -lh
+        cd abracadabra
         git filter-branch -f --env-filter "
         GIT_AUTHOR_NAME='BranName'
         GIT_AUTHOR_EMAIL='BranName@email'
         GIT_COMMITTER_NAME='BranName'
         GIT_COMMITTER_EMAIL='BranName@email'
         " HEAD
-
-    - name: MR
-      run: |
         git remote add origin git@github.com:rrrru/automator.git
         git push origin dev
+
